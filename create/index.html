@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam Engine — Build & Deploy Instructions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1A8FE3;--bright:#4AABF0;--deep:#0D5C99;--navy:#0A3F6E;
+  --black:#080C14;--card:#0D1220;--surface:#111927;--border:#1C2A40;
+  --white:#F0F6FF;--gray:#6B8AAA;--gray-light:#9BAFC4;
+  --green:#28C840;--gold:#C8960C;--red:#FF5555;--orange:#FF8C00;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;line-height:1.6;max-width:900px;margin:0 auto;padding:40px 32px 80px;}
+
+/* ── HEADER ── */
+.doc-title{font-family:‘Orbitron’,monospace;font-weight:900;font-size:32px;letter-spacing:3px;color:var(–bright);text-shadow:0 0 20px rgba(74,171,240,0.4);margin-bottom:6px;}
+.doc-subtitle{font-family:‘Rajdhani’,sans-serif;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(–blue);margin-bottom:32px;}
+.doc-intro{font-size:16px;color:var(–gray-light);line-height:1.8;max-width:700px;margin-bottom:40px;padding:24px;background:var(–card);border:1px solid var(–border);border-radius:4px;border-left:3px solid var(–blue);}
+
+/* ── TABLE OF CONTENTS ── */
+.toc{background:var(–card);border:1px solid var(–border);border-radius:4px;padding:24px 28px;margin-bottom:48px;}
+.toc-title{font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(–blue);margin-bottom:16px;}
+.toc ol{padding-left:20px;}
+.toc li{padding:5px 0;font-family:‘Rajdhani’,sans-serif;font-size:16px;}
+.toc a{color:var(–gray-light);text-decoration:none;transition:color 0.2s;}
+.toc a:hover{color:var(–bright);}
+.toc-phase{color:var(–gray);font-size:12px;letter-spacing:1px;}
+
+/* ── PHASES ── */
+.phase{margin-bottom:56px;}
+.phase-header{
+display:flex;align-items:center;gap:16px;
+padding:16px 20px;margin-bottom:24px;
+background:var(–navy);border:1px solid var(–blue);border-radius:4px;
+position:relative;overflow:hidden;
+}
+.phase-header::after{
+content:’’;position:absolute;bottom:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(–bright),transparent);
+}
+.phase-num{
+font-family:‘Orbitron’,monospace;font-weight:900;font-size:28px;
+color:var(–bright);flex-shrink:0;width:48px;text-align:center;
+}
+.phase-info{}
+.phase-name{font-family:‘Orbitron’,monospace;font-weight:700;font-size:15px;letter-spacing:2px;color:var(–white);}
+.phase-time{font-family:‘Rajdhani’,sans-serif;font-size:13px;letter-spacing:2px;color:var(–gray);margin-top:2px;}
+.phase-who{
+margin-left:auto;flex-shrink:0;
+font-family:‘Rajdhani’,sans-serif;font-size:11px;font-weight:700;
+letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;
+}
+.who-you{background:rgba(26,143,227,0.2);color:var(–bright);border:1px solid var(–blue);}
+.who-claude{background:rgba(40,200,64,0.15);color:#4AE080;border:1px solid #28C840;}
+.who-both{background:rgba(200,150,12,0.15);color:var(–gold);border:1px solid var(–gold);}
+
+/* ── STEPS ── */
+.step{
+display:flex;gap:20px;margin-bottom:16px;
+background:var(–card);border:1px solid var(–border);border-radius:4px;
+padding:18px 20px;position:relative;
+transition:border-color 0.2s;
+}
+.step:hover{border-color:var(–blue);}
+.step-check{
+width:28px;height:28px;border-radius:50%;flex-shrink:0;
+border:2px solid var(–border);display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.2s;margin-top:2px;font-size:14px;
+}
+.step-check:hover{border-color:var(–blue);}
+.step.done .step-check{background:var(–green);border-color:var(–green);color:white;}
+.step.done .step-text{opacity:0.5;text-decoration:line-through;}
+.step-content{flex:1;}
+.step-num{
+font-family:‘Orbitron’,monospace;font-size:10px;letter-spacing:2px;
+color:var(–blue);margin-bottom:4px;
+}
+.step-text{font-size:15px;color:var(–white);margin-bottom:4px;font-weight:500;}
+.step-detail{font-size:13px;color:var(–gray-light);line-height:1.6;}
+.step-url{
+display:inline-block;margin-top:8px;
+font-family:‘Rajdhani’,sans-serif;font-size:12px;font-weight:600;
+letter-spacing:1px;color:var(–bright);text-decoration:none;
+border:1px solid rgba(74,171,240,0.3);padding:4px 10px;border-radius:2px;
+}
+.step-url:hover{border-color:var(–bright);}
+.step-tag{
+display:inline-block;margin-top:6px;margin-right:6px;
+font-size:10px;letter-spacing:2px;text-transform:uppercase;
+font-family:‘Rajdhani’,sans-serif;padding:2px 8px;border-radius:2px;
+}
+.tag-easy{background:rgba(40,200,64,0.1);color:#4AE080;border:1px solid rgba(40,200,64,0.3);}
+.tag-claude{background:rgba(26,143,227,0.1);color:var(–bright);border:1px solid rgba(26,143,227,0.3);}
+.tag-important{background:rgba(255,85,85,0.1);color:#FF8888;border:1px solid rgba(255,85,85,0.3);}
+.tag-5min{background:rgba(200,150,12,0.1);color:var(–gold);border:1px solid rgba(200,150,12,0.3);}
+
+/* ── CALLOUTS ── */
+.callout{
+padding:16px 20px;margin:20px 0;border-radius:4px;
+font-size:14px;line-height:1.7;
+}
+.callout-blue{background:rgba(26,143,227,0.08);border:1px solid rgba(26,143,227,0.2);border-left:3px solid var(–blue);color:var(–gray-light);}
+.callout-green{background:rgba(40,200,64,0.07);border:1px solid rgba(40,200,64,0.2);border-left:3px solid var(–green);color:#9BEAAA;}
+.callout-gold{background:rgba(200,150,12,0.08);border:1px solid rgba(200,150,12,0.2);border-left:3px solid var(–gold);color:#D4A840;}
+.callout-red{background:rgba(255,85,85,0.07);border:1px solid rgba(255,85,85,0.2);border-left:3px solid var(–red);color:#FFAAAA;}
+.callout-title{font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block;}
+
+/* ── SECTION DIVIDERS ── */
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(–blue),transparent);margin:48px 0;opacity:0.3;}
+
+/* ── CODE BLOCKS ── */
+code{
+font-family:monospace;font-size:13px;
+background:rgba(26,143,227,0.1);color:var(–bright);
+padding:2px 6px;border-radius:3px;
+}
+
+/* ── CHECKLIST TABLE ── */
+.checklist-table{width:100%;border-collapse:collapse;margin-top:16px;}
+.checklist-table th{
+background:var(–navy);padding:12px 16px;
+font-family:‘Rajdhani’,sans-serif;font-size:12px;
+letter-spacing:3px;text-transform:uppercase;color:var(–gray-light);
+text-align:left;border:1px solid var(–border);
+}
+.checklist-table td{
+padding:12px 16px;font-size:14px;
+border:1px solid var(–border);background:var(–card);
+vertical-align:top;color:var(–gray-light);
+}
+.checklist-table td:first-child{font-weight:500;color:var(–white);}
+
+/* ── PROGRESS BAR ── */
+.progress-container{margin-bottom:40px;}
+.progress-label{font-family:‘Rajdhani’,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(–gray);margin-bottom:8px;display:flex;justify-content:space-between;}
+.progress-bar{height:6px;background:var(–surface);border-radius:3px;overflow:hidden;border:1px solid var(–border);}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(–deep),var(–bright));border-radius:3px;transition:width 0.4s ease;box-shadow:0 0 8px var(–blue);}
+
+/* ── ACCORDION ── */
+.accordion{margin-bottom:16px;}
+.accordion-header{
+display:flex;justify-content:space-between;align-items:center;
+background:var(–surface);border:1px solid var(–border);
+padding:14px 18px;cursor:pointer;border-radius:4px;
+font-family:‘Rajdhani’,sans-serif;font-weight:600;font-size:16px;color:var(–white);
+transition:border-color 0.2s;
+}
+.accordion-header:hover{border-color:var(–blue);}
+.accordion-icon{color:var(–blue);transition:transform 0.3s;font-family:‘Orbitron’,monospace;}
+.accordion.open .accordion-icon{transform:rotate(45deg);color:var(–bright);}
+.accordion-body{
+max-height:0;overflow:hidden;transition:max-height 0.4s ease;
+background:var(–card);border:1px solid var(–border);border-top:none;
+border-radius:0 0 4px 4px;
+}
+.accordion.open .accordion-body{max-height:1000px;}
+.accordion-inner{padding:20px 20px;}
+
+/* ── UTILS ── */
+h2{font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:20px;color:var(–white);margin:32px 0 16px;}
+h3{font-family:‘Rajdhani’,sans-serif;font-weight:600;font-size:16px;color:var(–bright);margin:20px 0 10px;letter-spacing:1px;}
+p{font-size:15px;color:var(–gray-light);margin-bottom:12px;line-height:1.7;}
+.emoji{font-size:20px;}
+</style>
+
+</head>
+<body>
+
+<div class="doc-title">JAM ENGINE</div>
+<div class="doc-subtitle">Build & Deploy — Operator's Instruction Sheet</div>
+
+<div class="doc-intro">
+  <strong style="color:var(--white)">What this document is:</strong> A step-by-step, phase-by-phase guide to building and deploying a Jam Engine instance — for yourself, or for a new client. Written for a non-technical operator who works with Claude to do the building.<br><br>
+  <strong style="color:var(--white)">How to use it:</strong> Work through each phase in order. Each step has a checkbox — click it when done. Steps are colour-coded by who does the work: <span style="color:var(--bright)">you</span>, <span style="color:#4AE080">Claude</span>, or <span style="color:var(--gold)">both together</span>. When it says Claude, open a new chat, paste the step, and let it run.
+</div>
+
+<!-- PROGRESS -->
+
+<div class="progress-container">
+  <div class="progress-label"><span>Overall Progress</span><span id="progress-text">0 / 0 steps complete</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- TOC -->
+
+<div class="toc">
+  <div class="toc-title">Phases in This Document</div>
+  <ol>
+    <li><a href="#phase0">Before You Start — What You Need to Gather</a> <span class="toc-phase">· 15 min</span></li>
+    <li><a href="#phase1">Create Your Free Accounts</a> <span class="toc-phase">· 20 min</span></li>
+    <li><a href="#phase2">Set Up the Domain</a> <span class="toc-phase">· 10 min</span></li>
+    <li><a href="#phase3">Build the App With Claude</a> <span class="toc-phase">· 2–4 hours (Claude works, you direct)</span></li>
+    <li><a href="#phase4">Configure Your Artist Profile</a> <span class="toc-phase">· 20 min</span></li>
+    <li><a href="#phase5">Import Your Songs</a> <span class="toc-phase">· 10–30 min</span></li>
+    <li><a href="#phase6">Connect Stripe</a> <span class="toc-phase">· 10 min</span></li>
+    <li><a href="#phase7">Invite Your Band Members</a> <span class="toc-phase">· 5 min</span></li>
+    <li><a href="#phase8">Run a Test Show</a> <span class="toc-phase">· 20 min</span></li>
+    <li><a href="#phase9">Go Live</a> <span class="toc-phase">· Ready when you are</span></li>
+    <li><a href="#phase10">When Setting Up a New Client (White-Label)</a> <span class="toc-phase">· 30 min per client</span></li>
+  </ol>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════ PHASE 0 ════ -->
+
+<div class="phase" id="phase0">
+  <div class="phase-header">
+    <div class="phase-num">0</div>
+    <div class="phase-info">
+      <div class="phase-name">Before You Start</div>
+      <div class="phase-time">15 minutes · Gather what you need</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="callout-title">💡 Read This First</span>
+    You don't need to know how to code. You don't need to understand servers. You just need to gather some information, create some free accounts, and then tell Claude what to build. Claude writes all the code and gives you exact instructions for every click.
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 0.1</div>
+      <div class="step-text">Gather your artist information</div>
+      <div class="step-detail">You'll need: artist/band name, a short bio (2–3 sentences), your social media handles (Instagram, Facebook, TikTok etc), your Substack URL if you have one, links to your music on Spotify/Apple Music/YouTube.</div>
+      <span class="step-tag tag-easy">Easy</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 0.2</div>
+      <div class="step-text">Have your branding assets ready</div>
+      <div class="step-detail">You need: your logo (PNG or SVG, ideally on transparent background), your preferred colours (hex codes if you know them, or just descriptions like "electric blue and black"), and optionally a hero photo or background image for your hub page.</div>
+      <span class="step-tag tag-easy">Easy</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 0.3</div>
+      <div class="step-text">Decide on your domain</div>
+      <div class="step-detail">Option A (free, immediate): <code>yourname.jamengine.com</code> — no cost, set up automatically.<br>Option B (custom domain): buy <code>yourname.com</code> or <code>yourname.band</code> through us — approx. $12–20/year.<br>Pick one before starting. You can always switch later.</div>
+      <span class="step-tag tag-easy">Easy</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 0.4</div>
+      <div class="step-text">Prepare your song list (optional but recommended)</div>
+      <div class="step-detail">If you use Songbook Pro: export your songs as an .sbp file (File → Export in the app).<br>If you use Ultimate Guitar: no export needed, you'll copy/paste charts one at a time.<br>If you're starting fresh: write a list of your 10–20 most-played songs to enter manually. You can always add more later.</div>
+      <span class="step-tag tag-easy">Easy</span>
+      <span class="step-tag tag-5min">Optional now</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 0.5</div>
+      <div class="step-text">Make sure you have a Stripe account</div>
+      <div class="step-detail">Stripe is how you receive tips. If you don't have one, go to <a href="https://stripe.com" class="step-url" target="_blank">stripe.com</a> and sign up — it's free and takes about 5 minutes. You'll need a bank account to connect it to. Your tips land directly in Stripe and transfer to your bank automatically.</div>
+      <span class="step-tag tag-important">Important</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 1 ════ -->
+
+<div class="phase" id="phase1">
+  <div class="phase-header">
+    <div class="phase-num">1</div>
+    <div class="phase-info">
+      <div class="phase-name">Create Your Free Accounts</div>
+      <div class="phase-time">20 minutes · Four quick sign-ups</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="callout-title">✓ These are completely free</span>
+    All four services have generous free tiers that cover everything Jam Engine needs. You won't be asked for a credit card for the hosting accounts. Stripe has no monthly fee — they only take a small percentage when you actually receive a payment.
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.1 · GitHub</div>
+      <div class="step-text">Create a GitHub account</div>
+      <div class="step-detail">This stores your app's code. You don't need to understand it — just create the account and remember the username and password.</div>
+      <a href="https://github.com/signup" class="step-url" target="_blank">→ github.com/signup</a>
+      <span class="step-tag tag-easy">Free · 2 min</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.2 · Vercel</div>
+      <div class="step-text">Create a Vercel account (sign up with GitHub)</div>
+      <div class="step-detail">This hosts and runs your app. Sign up using your GitHub account — it's one click. Vercel is where your website lives.</div>
+      <a href="https://vercel.com/signup" class="step-url" target="_blank">→ vercel.com/signup</a>
+      <span class="step-tag tag-easy">Free · 2 min</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.3 · Supabase</div>
+      <div class="step-text">Create a Supabase account</div>
+      <div class="step-detail">This is your database — it stores songs, shows, tips, fan emails, everything. Sign up with GitHub for speed. When asked to create a project, call it <code>jam-engine</code> and choose the region closest to you.</div>
+      <a href="https://supabase.com/dashboard/sign-up" class="step-url" target="_blank">→ supabase.com/dashboard/sign-up</a>
+      <span class="step-tag tag-easy">Free · 5 min</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.4 · Cloudinary</div>
+      <div class="step-text">Create a Cloudinary account</div>
+      <div class="step-detail">This stores images — your logo, artist photos, fan photo wall uploads. Sign up with Google or email. Choose the free plan.</div>
+      <a href="https://cloudinary.com/users/register/free" class="step-url" target="_blank">→ cloudinary.com/users/register/free</a>
+      <span class="step-tag tag-easy">Free · 3 min</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.5 · Cloudflare</div>
+      <div class="step-text">Create a Cloudflare account</div>
+      <div class="step-detail">This manages your domain (web address). If you're using the free <code>yourname.jamengine.com</code> subdomain, Claude sets this up automatically. If you want a custom domain, Cloudflare is where you register it.</div>
+      <a href="https://dash.cloudflare.com/sign-up" class="step-url" target="_blank">→ dash.cloudflare.com/sign-up</a>
+      <span class="step-tag tag-easy">Free · 3 min</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 1.6 · Collect your credentials</div>
+      <div class="step-text">Save your API keys somewhere safe — you'll give them to Claude in Phase 3</div>
+      <div class="step-detail">
+        From <strong>Supabase</strong>: Settings → API → copy "Project URL" and "anon public" key<br>
+        From <strong>Cloudinary</strong>: Dashboard → copy Cloud Name, API Key, API Secret<br>
+        From <strong>Stripe</strong>: Developers → API Keys → copy Publishable key and Secret key<br>
+        From <strong>Cloudflare</strong>: My Profile → API Tokens → create a token with "Edit DNS" permission<br><br>
+        <strong style="color:var(--bright)">Keep these private. Never share them publicly.</strong>
+      </div>
+      <span class="step-tag tag-important">Important — Save These</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 2 ════ -->
+
+<div class="phase" id="phase2">
+  <div class="phase-header">
+    <div class="phase-num">2</div>
+    <div class="phase-info">
+      <div class="phase-name">Set Up the Domain</div>
+      <div class="phase-time">10 minutes · Your web address</div>
+    </div>
+    <div class="phase-who who-both">You + Claude</div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 2.1</div>
+      <div class="step-text">Choose your subdomain name</div>
+      <div class="step-detail">Your free address will be <code>[yourname].jamengine.com</code>. Decide what goes in the brackets. Ideally your artist name, one word, lowercase, no spaces. E.g. <code>soulssundays.jamengine.com</code> or <code>janesmith.jamengine.com</code>.</div>
+      <span class="step-tag tag-easy">You decide</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 2.2</div>
+      <div class="step-text">Tell Claude your subdomain and Cloudflare API token — Claude creates the subdomain automatically</div>
+      <div class="step-detail">Open a Claude chat and paste: <em>"I'm setting up my Jam Engine subdomain. My subdomain name is [yourname]. My Cloudflare API token is [paste token]. My Cloudflare Zone ID is [paste from Cloudflare dashboard → your domain → Zone ID in the right sidebar]. Set up the DNS record for [yourname].jamengine.com pointing to Vercel."</em></div>
+      <span class="step-tag tag-claude">Claude does this</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 3 ════ -->
+
+<div class="phase" id="phase3">
+  <div class="phase-header">
+    <div class="phase-num">3</div>
+    <div class="phase-info">
+      <div class="phase-name">Build the App With Claude</div>
+      <div class="phase-time">2–4 hours · Claude builds, you direct and review</div>
+    </div>
+    <div class="phase-who who-claude">Claude Builds</div>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="callout-title">🤖 How This Phase Works</span>
+    You open a new Claude conversation (in Claude.ai or the Claude app), give Claude the information below, and Claude generates all the code. You then copy-paste that code into GitHub (Claude tells you exactly where). You don't need to understand the code — you just need to follow the instructions Claude gives you step by step. This is the longest phase but Claude does the heavy lifting.
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 3.1 · Start a new Claude chat</div>
+      <div class="step-text">Open Claude and paste the Master Build Prompt</div>
+      <div class="step-detail">Copy this prompt exactly — fill in the [brackets] with your information, then send it to Claude:<br><br>
+      <code style="display:block;padding:16px;line-height:1.8;white-space:pre-wrap;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--gray-light)">
+We are building the Jam Engine live performance platform.
+This is a full-stack web app built on:
+- Frontend: React/Next.js
+- Database: Supabase (Postgres + Realtime)
+- Hosting: Vercel
+- Payments: Stripe
+- Media: Cloudinary
+
+My credentials:
+
+- Supabase URL: [paste here]
+- Supabase anon key: [paste here]
+- Stripe publishable key: [paste here]
+- Stripe secret key: [paste here]
+- Cloudinary cloud name: [paste here]
+- Cloudinary API key: [paste here]
+- Cloudinary API secret: [paste here]
+
+My artist/instance name: [your name]
+My subdomain: [yourname].jamengine.com
+
+Please build the Jam Engine platform following the full
+specification in our white paper. Start with the database
+schema and give me the exact SQL to run in Supabase first.
+Then we’ll build component by component.
+</code>
+</div>
+<span class="step-tag tag-claude">Claude takes it from here</span>
+</div>
+
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 3.2 · Database schema</div>
+      <div class="step-text">Run the SQL Claude gives you in Supabase</div>
+      <div class="step-detail">Claude will give you a block of SQL code. Go to your Supabase dashboard → SQL Editor → paste the code → click Run. This creates all your database tables. Takes about 30 seconds.</div>
+      <span class="step-tag tag-easy">One click</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 3.3 · Follow Claude's build sequence</div>
+      <div class="step-text">Claude builds each component — you copy the code into GitHub and confirm when done</div>
+      <div class="step-detail">Claude will work through the build in phases: database → auth → song engine → payment flow → performer views → fan views → branding. For each piece, Claude gives you the code and tells you exactly where to put it. You copy, paste, and reply "done" — Claude continues. This is the bulk of the build time.</div>
+      <span class="step-tag tag-claude">Claude drives</span>
+      <span class="step-tag tag-easy">You copy-paste</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 3.4 · Deploy to Vercel</div>
+      <div class="step-text">Claude gives you exact deploy instructions — one command</div>
+      <div class="step-detail">At the end of the build, Claude will give you the commands to push your code to GitHub and connect it to Vercel. Vercel auto-deploys on every push. Your site will be live at your subdomain within minutes of this step.</div>
+      <span class="step-tag tag-claude">Claude guides</span>
+    </div>
+  </div>
+
+  <div class="callout callout-gold">
+    <span class="callout-title">⏱ Time Check</span>
+    Phase 3 typically takes 2–4 hours spread across a few sessions. You don't have to do it all at once. Claude keeps context within a conversation, so you can pause, come back, and continue. If you start a new conversation, just paste the Master Build Prompt again and tell Claude where you left off.
+  </div>
+</div>
+
+<!-- ════ PHASE 4 ════ -->
+
+<div class="phase" id="phase4">
+  <div class="phase-header">
+    <div class="phase-num">4</div>
+    <div class="phase-info">
+      <div class="phase-name">Configure Your Artist Profile</div>
+      <div class="phase-time">20 minutes · The setup wizard guides you</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 4.1</div>
+      <div class="step-text">Log into your Master account</div>
+      <div class="step-detail">Go to <code>[yourname].jamengine.com/admin</code> and sign in with Google or Facebook — whichever you used when Claude set up your account. The setup wizard starts automatically on first login.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 4.2</div>
+      <div class="step-text">Work through the Setup Wizard</div>
+      <div class="step-detail">The wizard walks you through: upload your logo → set your colours → add your bio → add your social links → add your streaming links → set up your booking enquiry email(s). Everything is skippable. You can come back and change anything at any time in Settings.</div>
+      <span class="step-tag tag-easy">Self-explanatory</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 4.3</div>
+      <div class="step-text">Check your public hub looks right</div>
+      <div class="step-detail">Visit your plain URL (without /admin) to see what your fans will see. Check your logo, bio, and links all appear correctly. Edit anything in Settings if needed.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 5 ════ -->
+
+<div class="phase" id="phase5">
+  <div class="phase-header">
+    <div class="phase-num">5</div>
+    <div class="phase-info">
+      <div class="phase-name">Import Your Songs</div>
+      <div class="phase-time">10–30 min depending on catalog size</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      Option A: Import from Songbook Pro (.sbp file)
+      <span class="accordion-icon">+</span>
+    </div>
+    <div class="accordion-body"><div class="accordion-inner">
+      <ol style="padding-left:20px;color:var(--gray-light);font-size:14px;line-height:2">
+        <li>In Songbook Pro on your device, go to File → Export → Export as .sbp</li>
+        <li>Email the .sbp file to yourself or AirDrop it to your computer</li>
+        <li>In your Jam Engine admin, go to Songbook → Import Songs</li>
+        <li>Select "Songbook Pro (.sbp)" and upload the file</li>
+        <li>Your entire catalog imports — songs, keys, and setlists</li>
+        <li>Review imported songs and set default keys for any that need adjusting</li>
+      </ol>
+    </div></div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      Option B: Import from Ultimate Guitar (paste method)
+      <span class="accordion-icon">+</span>
+    </div>
+    <div class="accordion-body"><div class="accordion-inner">
+      <ol style="padding-left:20px;color:var(--gray-light);font-size:14px;line-height:2">
+        <li>On Ultimate Guitar, find the song and open the chord tab</li>
+        <li>Select all the text (Ctrl+A or Cmd+A) and copy</li>
+        <li>In Jam Engine admin, go to Songbook → Add Song → Paste from UG</li>
+        <li>Paste into the text box — the app parses and formats it automatically</li>
+        <li>Set the artist name, song name, original/cover, and default key</li>
+        <li>Save. Repeat for each song.</li>
+      </ol>
+    </div></div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      Option C: Enter songs manually
+      <span class="accordion-icon">+</span>
+    </div>
+    <div class="accordion-body"><div class="accordion-inner">
+      <p style="color:var(--gray-light);font-size:14px">In the Song Editor, type your chord chart in the same format as Ultimate Guitar — chords in square brackets inline with lyrics, section headers like Verse / Chorus / Bridge. The editor has a live preview so you can see it formatted as you type.</p>
+    </div></div>
+  </div>
+
+  <div class="step" style="margin-top:16px">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 5.1 · After importing</div>
+      <div class="step-text">Build your first setlist</div>
+      <div class="step-detail">Go to Setlists → Create New. Name it (e.g. "Standard Set" or the venue name). Add songs by searching your catalog. Drag to reorder. This becomes your default show setlist.</div>
+      <span class="step-tag tag-easy">5 minutes</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 6 ════ -->
+
+<div class="phase" id="phase6">
+  <div class="phase-header">
+    <div class="phase-num">6</div>
+    <div class="phase-info">
+      <div class="phase-name">Connect Stripe</div>
+      <div class="phase-time">10 minutes · Where your money goes</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 6.1</div>
+      <div class="step-text">Go to Settings → Payments in your admin panel</div>
+      <div class="step-detail">Click "Connect Stripe Account". This opens Stripe's secure connection page — you log into your existing Stripe account and authorise the connection. Your tips will flow directly into your Stripe account from this point. You can disconnect or change accounts at any time in Settings.</div>
+      <span class="step-tag tag-important">Required before going live</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 6.2</div>
+      <div class="step-text">Run a test transaction</div>
+      <div class="step-detail">In your admin, go to Settings → Payments → Test Mode. Use Stripe's test card number <code>4242 4242 4242 4242</code> (any future expiry, any 3-digit CVV) to send a $5 test tip. Confirm it appears in your Stripe dashboard. Then disable test mode before your first real show.</div>
+      <span class="step-tag tag-important">Do this before your first show</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 7 ════ -->
+
+<div class="phase" id="phase7">
+  <div class="phase-header">
+    <div class="phase-num">7</div>
+    <div class="phase-info">
+      <div class="phase-name">Invite Your Band Members</div>
+      <div class="phase-time">5 minutes</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 7.1</div>
+      <div class="step-text">Go to Team → Invite Members</div>
+      <div class="step-detail">Enter the email address of each band member and assign their role: Lead Singer or Band Member. They'll receive an invitation link. When they click it and log in via Google or Facebook, they have access. That's it — no passwords, no app download.</div>
+      <span class="step-tag tag-easy">One per band member</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 7.2</div>
+      <div class="step-text">Assign setlists to band members</div>
+      <div class="step-detail">In Setlists, open a setlist and tap "Assign to Members". Choose who sees this setlist. They'll see it in their Band Member view when they log in. You can give different setlists to different members (e.g. a guitar-only setlist vs a full band setlist).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 8 ════ -->
+
+<div class="phase" id="phase8">
+  <div class="phase-header">
+    <div class="phase-num">8</div>
+    <div class="phase-info">
+      <div class="phase-name">Run a Test Show</div>
+      <div class="phase-time">20 minutes · Do this before your first real gig</div>
+    </div>
+    <div class="phase-who who-both">You + a mate</div>
+  </div>
+
+  <div class="callout callout-gold">
+    <span class="callout-title">⚠ Do Not Skip This</span>
+    Running a test show before your first real performance saves embarrassment. It takes 20 minutes and you'll feel completely confident by the end of it.
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 8.1</div>
+      <div class="step-text">Create a test show</div>
+      <div class="step-detail">In your admin, go to Shows → Create Show. Pick a test venue name, today's date, choose your setlist, set your tip pricing options, and hit "Start Now". Confirm the "Are you ready to go?" popup. Your show is now live.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 8.2</div>
+      <div class="step-text">Open your QR code on a second device</div>
+      <div class="step-detail">On your phone or a friend's phone, scan the QR code from your hub page. You should land on the live fan view and see your setlist. Try browsing the song menu.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 8.3</div>
+      <div class="step-text">Send a test tip and request</div>
+      <div class="step-detail">Use Stripe's test card (<code>4242 4242 4242 4242</code>) on the fan view to send a $5 test request. Watch it appear in your performer view in real time. Try marking it as played and see the song colour change on both screens.</div>
+      <span class="step-tag tag-important">Use test mode</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 8.4</div>
+      <div class="step-text">Check the Coming Up Next display mode</div>
+      <div class="step-detail">Open <code>[yourname].jamengine.com/display</code> on a tablet or laptop. This is the fullscreen queue display for venue TVs. Confirm the queue updates when you change it on the performer view.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 8.5</div>
+      <div class="step-text">End the test show and check show history</div>
+      <div class="step-detail">In your admin, click "End Show" → confirm. Then go to Analytics → Show History. You should see the test show with your test tip recorded. This is how all your show history will be saved going forward.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 9 ════ -->
+
+<div class="phase" id="phase9">
+  <div class="phase-header">
+    <div class="phase-num">9</div>
+    <div class="phase-info">
+      <div class="phase-name">Go Live</div>
+      <div class="phase-time">You're ready. Play your first real show.</div>
+    </div>
+    <div class="phase-who who-you">You</div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">PRE-SHOW CHECKLIST</div>
+      <div class="step-text">Before every show — run through this</div>
+      <div class="step-detail">
+        ○ Stripe test mode is OFF<br>
+        ○ Tonight's setlist is created and correct<br>
+        ○ Tip pricing options are set for tonight<br>
+        ○ Your QR code is accessible (screenshot it to your camera roll as backup)<br>
+        ○ Your performer view is open on your iPad/tablet<br>
+        ○ Band members have loaded the setlist on their devices<br>
+        ○ If streaming: your stream URL is pasted into show settings<br>
+        ○ Optional: Coming Up Next display is open on venue screen
+      </div>
+      <span class="step-tag tag-important">Every show</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">AT THE VENUE</div>
+      <div class="step-text">Create the show and go live</div>
+      <div class="step-detail">Shows → Create Show → Select your setlist → Start Now → Confirm → You're live. Print or display your QR code anywhere your audience can see it. Table tents, a sign near you, or projected on a screen. The tips will start.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 10 ════ -->
+
+<div class="phase" id="phase10">
+  <div class="phase-header">
+    <div class="phase-num">10</div>
+    <div class="phase-info">
+      <div class="phase-name">Setting Up a New Client (White-Label)</div>
+      <div class="phase-time">~30 minutes per Complete install</div>
+    </div>
+    <div class="phase-who who-both">You + Claude</div>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="callout-title">📋 The Operator Role</span>
+    When a new client purchases through your Jam Engine sales site, this is the process. You are the human filter — you review, approve, and hand over. Claude does the technical construction. Your target is 30 minutes of your time per installation.
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.1</div>
+      <div class="step-text">You receive a sale notification email</div>
+      <div class="step-detail">Subject: "New Jam Engine Sale — [Tier] — [Client Name]". The email includes a link to the client's completed onboarding form in your CRM dashboard. Log into your operator CRM to see their full submission.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.2</div>
+      <div class="step-text">Check the client's onboarding form is complete</div>
+      <div class="step-detail">Verify you have: artist name, logo file, colour palette or reference, bio, social links, streaming links, Stripe account email, domain preference, band member emails (if Complete tier). If anything is missing, click "Send Missing Assets Email" in the CRM — it emails the client a checklist automatically.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.3</div>
+      <div class="step-text">Open Claude and paste the Client Deployment Prompt</div>
+      <div class="step-detail">
+        <code style="display:block;padding:16px;line-height:1.8;white-space:pre-wrap;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--gray-light)">
+We are deploying a new Jam Engine instance for a client.
+Client name: [artist name]
+Subdomain: [artistname].jamengine.com
+Tier: Complete
+Primary colour: [hex or description]
+Logo: [I will upload it]
+Bio: [paste bio]
+Social links: [list them]
+Streaming links: [list them]
+
+Please:
+
+1. Generate the Vercel deployment configuration for this instance
+1. Create the branding CSS variables for their colour scheme
+1. Generate the admin setup SQL for their Supabase instance
+1. Give me exact step-by-step instructions to deploy and configure
+
+I will follow your instructions step by step.
+</code>
+</div>
+<span class="step-tag tag-claude">Claude builds</span>
+</div>
+
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.4</div>
+      <div class="step-text">Follow Claude's deployment steps</div>
+      <div class="step-detail">Claude will walk you through deploying the client's instance using the white-label template. This is the same as Phase 3 but faster because the core codebase already exists — you're just configuring and deploying a copy for this client. Takes 15–20 minutes.</div>
+      <span class="step-tag tag-claude">Claude drives</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.5</div>
+      <div class="step-text">Review the live preview</div>
+      <div class="step-detail">Before sending credentials to the client, open their URL yourself and check: logo displays correctly, colours are right, links all work, the fan view loads. Make any tweaks in the CRM branding tool.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-check" onclick="toggleStep(this)">○</div>
+    <div class="step-content">
+      <div class="step-num">STEP 10.6</div>
+      <div class="step-text">Approve and send the handover email</div>
+      <div class="step-detail">In the CRM, click "Approve &amp; Deliver". The system automatically sends the client their: live site URL, master account login instructions, admin guide PDF, video walkthrough link. Mark their record as Complete. You're done. They own it from here.</div>
+      <span class="step-tag tag-easy">One click</span>
+    </div>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="callout-title">✓ Total Time Check</span>
+    If everything is prepared: 5 minutes reviewing the form + 15 minutes with Claude deploying + 5 minutes reviewing preview + 5 minutes handover = <strong>~30 minutes.</strong> That's your $300 (minus Amanda's $80 cut) earned in half an hour.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- QUICK REFERENCE TABLE -->
+
+<h2>Quick Reference — Who Does What</h2>
+<table class="checklist-table">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>You</th>
+      <th>Claude</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Create free accounts</td><td>✓</td><td>Guides you</td><td>20 min</td></tr>
+    <tr><td>Collect API keys</td><td>✓</td><td>Tells you where to find them</td><td>10 min</td></tr>
+    <tr><td>Write database schema</td><td>Review</td><td>✓ Writes it</td><td>Claude's time</td></tr>
+    <tr><td>Build all app code</td><td>Copy-paste</td><td>✓ Writes it all</td><td>2–4 hr total</td></tr>
+    <tr><td>Deploy to Vercel</td><td>Run commands Claude gives</td><td>✓ Exact instructions</td><td>5 min</td></tr>
+    <tr><td>Configure artist profile</td><td>✓ Setup wizard</td><td>—</td><td>20 min</td></tr>
+    <tr><td>Import songs</td><td>✓</td><td>—</td><td>10–30 min</td></tr>
+    <tr><td>Connect Stripe</td><td>✓</td><td>—</td><td>5 min</td></tr>
+    <tr><td>Run test show</td><td>✓</td><td>—</td><td>20 min</td></tr>
+    <tr><td>Deploy new client instance</td><td>Review + approve</td><td>✓ Builds it</td><td>30 min</td></tr>
+    <tr><td>Apply client branding</td><td>Upload logo/colours</td><td>✓ Generates CSS</td><td>5 min</td></tr>
+    <tr><td>Ongoing bug fixes</td><td>Describe the issue</td><td>✓ Fixes it</td><td>As needed</td></tr>
+  </tbody>
+</table>
+
+<div class="divider"></div>
+
+<h2>When Things Go Wrong — Quick Fixes</h2>
+
+<div class="accordion">
+  <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+    "The site isn't loading / showing an error"
+    <span class="accordion-icon">+</span>
+  </div>
+  <div class="accordion-body"><div class="accordion-inner">
+    <p>Open Claude, describe what you see: "My Jam Engine site at [url] is showing [error message]. Here are my Vercel environment variables [list them]. What's wrong?" Claude will diagnose and give you the fix.</p>
+  </div></div>
+</div>
+
+<div class="accordion">
+  <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+    "Stripe payments aren't going through"
+    <span class="accordion-icon">+</span>
+  </div>
+  <div class="accordion-body"><div class="accordion-inner">
+    <p>First check: is test mode on or off? (Settings → Payments → toggle). If test mode is off and you're using a real card, check your Stripe dashboard for the failed payment and read the error code. Paste the error code into Claude and it will tell you what to fix.</p>
+  </div></div>
+</div>
+
+<div class="accordion">
+  <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+    "The real-time queue isn't updating for my band"
+    <span class="accordion-icon">+</span>
+  </div>
+  <div class="accordion-body"><div class="accordion-inner">
+    <p>This is almost always a Supabase Realtime configuration issue. Tell Claude: "My Supabase Realtime isn't syncing between devices. My Supabase URL is [url]." Claude will give you the exact settings to check in your Supabase dashboard.</p>
+  </div></div>
+</div>
+
+<div class="accordion">
+  <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+    "I want to change my branding / update a feature"
+    <span class="accordion-icon">+</span>
+  </div>
+  <div class="accordion-body"><div class="accordion-inner">
+    <p>For branding: Settings → Appearance. For feature changes: open Claude, describe the change ("I want to add X to the performer view / change Y to work like Z"), and Claude will generate the updated code and tell you where to paste it.</p>
+  </div></div>
+</div>
+
+<div class="divider"></div>
+
+<div style="text-align:center;padding:40px 0">
+  <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:3px;color:var(--bright);margin-bottom:8px">JAM ENGINE</div>
+  <div style="font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gray)">Operator's Instruction Sheet · Version 1.0</div>
+</div>
+
+<script>
+function toggleStep(btn){
+  const step=btn.closest('.step');
+  step.classList.toggle('done');
+  btn.textContent=step.classList.contains('done')?'✓':'○';
+  updateProgress();
+}
+function updateProgress(){
+  const all=document.querySelectorAll('.step').length;
+  const done=document.querySelectorAll('.step.done').length;
+  const pct=all?Math.round(done/all*100):0;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=done+' / '+all+' steps complete';
+}
+// Accordion
+document.querySelectorAll('.accordion-header').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+});
+updateProgress();
+</script>
+
+</body>
+</html>
