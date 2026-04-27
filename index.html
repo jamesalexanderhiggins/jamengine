@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam Engine — Live Performance Platform for Musicians</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:       #1A8FE3;
+  --blue-bright:#4AABF0;
+  --blue-deep:  #0D5C99;
+  --navy:       #0A3F6E;
+  --black:      #080C14;
+  --card:       #0D1220;
+  --surface:    #111927;
+  --border:     #1C2A40;
+  --white:      #F0F6FF;
+  --gray:       #6B8AAA;
+  --gray-light: #9BAFC4;
+  --gold:       #C8960C;
+  --gold-light: #F0C040;
+  --red:        #FF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── GLOBAL GRID ── */
+.grid-bg{
+position:fixed;inset:0;z-index:0;pointer-events:none;
+background-image:
+linear-gradient(rgba(26,143,227,0.03) 1px,transparent 1px),
+linear-gradient(90deg,rgba(26,143,227,0.03) 1px,transparent 1px);
+background-size:60px 60px;
+}
+.glow-orb{
+position:fixed;pointer-events:none;z-index:0;
+border-radius:50%;filter:blur(120px);opacity:0.12;
+}
+.glow-orb-1{width:600px;height:600px;background:#1A8FE3;top:-200px;left:-150px;}
+.glow-orb-2{width:400px;height:400px;background:#0D5C99;bottom:-100px;right:-100px;}
+
+/* ── LAYOUT ── */
+.container{max-width:1120px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+section{position:relative;z-index:1;}
+
+/* ── NAV ── */
+nav{
+position:fixed;top:0;left:0;right:0;z-index:100;
+background:rgba(8,12,20,0.92);
+border-bottom:1px solid var(–border);
+backdrop-filter:blur(12px);
+}
+.nav-inner{
+max-width:1120px;margin:0 auto;padding:0 32px;
+display:flex;align-items:center;justify-content:space-between;
+height:64px;
+}
+.nav-logo{
+font-family:‘Orbitron’,monospace;font-weight:900;font-size:20px;
+letter-spacing:3px;color:var(–blue-bright);
+text-shadow:0 0 12px rgba(74,171,240,0.5);
+text-decoration:none;
+}
+.nav-logo span{color:var(–blue);font-size:14px;letter-spacing:6px;display:block;margin-top:-4px;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{
+color:var(–gray-light);font-size:13px;letter-spacing:1px;
+text-decoration:none;font-family:‘Rajdhani’,sans-serif;font-weight:600;
+text-transform:uppercase;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(–blue-bright);}
+.nav-cta{
+background:var(–blue);color:white;
+font-family:‘Rajdhani’,sans-serif;font-weight:700;
+font-size:13px;letter-spacing:2px;text-transform:uppercase;
+padding:10px 24px;border:none;cursor:pointer;border-radius:2px;
+text-decoration:none;
+box-shadow:0 0 16px rgba(26,143,227,0.4);
+transition:all 0.2s;
+}
+.nav-cta:hover{background:var(–blue-bright);box-shadow:0 0 24px rgba(74,171,240,0.6);}
+
+/* ── HERO ── */
+.hero{
+padding:160px 0 100px;
+text-align:center;
+position:relative;overflow:hidden;
+}
+.hero-eyebrow{
+font-family:‘Rajdhani’,sans-serif;font-size:12px;font-weight:600;
+letter-spacing:5px;text-transform:uppercase;color:var(–blue);
+margin-bottom:24px;display:block;
+}
+.hero h1{
+font-family:‘Orbitron’,monospace;font-weight:900;
+font-size:clamp(40px,7vw,82px);
+line-height:1.05;letter-spacing:3px;
+color:var(–white);
+margin-bottom:12px;
+}
+.hero h1 .accent{
+color:var(–blue-bright);
+text-shadow:0 0 30px rgba(74,171,240,0.7),0 0 80px rgba(26,143,227,0.3);
+}
+.hero-sub{
+font-size:clamp(16px,2.5vw,22px);color:var(–gray-light);
+max-width:640px;margin:24px auto 48px;
+line-height:1.7;font-weight:300;
+}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;}
+.btn-hero{
+font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:16px;
+letter-spacing:2px;text-transform:uppercase;text-decoration:none;
+padding:18px 44px;border-radius:2px;cursor:pointer;
+transition:all 0.25s;display:inline-block;
+}
+.btn-hero-primary{
+background:var(–blue);color:white;border:none;
+box-shadow:0 0 32px rgba(26,143,227,0.5),0 4px 20px rgba(0,0,0,0.3);
+}
+.btn-hero-primary:hover{background:var(–blue-bright);box-shadow:0 0 50px rgba(74,171,240,0.7);}
+.btn-hero-outline{
+background:transparent;color:var(–blue-bright);
+border:1.5px solid var(–blue);
+}
+.btn-hero-outline:hover{border-color:var(–blue-bright);background:rgba(26,143,227,0.08);}
+
+/* Stats strip */
+.stats-strip{
+display:flex;gap:0;justify-content:center;
+border:1px solid var(–border);border-radius:4px;
+background:var(–card);overflow:hidden;
+max-width:700px;margin:0 auto;
+}
+.stat-item{
+flex:1;padding:20px 16px;text-align:center;
+border-right:1px solid var(–border);
+}
+.stat-item:last-child{border-right:none;}
+.stat-num{
+font-family:‘Orbitron’,monospace;font-weight:900;font-size:28px;
+color:var(–blue-bright);text-shadow:0 0 12px rgba(74,171,240,0.5);
+display:block;
+}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(–gray);font-family:‘Rajdhani’,sans-serif;}
+
+/* ── DIVIDER ── */
+.neon-divider{
+width:100%;height:1px;
+background:linear-gradient(90deg,transparent,var(–blue),transparent);
+margin:80px 0;opacity:0.4;
+}
+.section-label{
+font-family:‘Rajdhani’,sans-serif;font-size:11px;font-weight:600;
+letter-spacing:5px;text-transform:uppercase;color:var(–blue);
+margin-bottom:16px;display:block;
+}
+.section-title{
+font-family:‘Orbitron’,monospace;font-weight:700;
+font-size:clamp(26px,4vw,42px);letter-spacing:2px;
+color:var(–white);margin-bottom:16px;line-height:1.2;
+}
+.section-body{
+font-size:18px;color:var(–gray-light);max-width:560px;
+line-height:1.8;font-weight:300;
+}
+
+/* ── PROBLEM ── */
+.problem{padding:80px 0;}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;}
+.pain-card{
+background:var(–card);border:1px solid var(–border);
+border-radius:4px;padding:28px;position:relative;overflow:hidden;
+}
+.pain-card::after{
+content:’’;position:absolute;top:0;left:0;right:0;height:1px;
+background:linear-gradient(90deg,transparent,rgba(255,80,80,0.4),transparent);
+}
+.pain-icon{font-size:28px;margin-bottom:12px;display:block;}
+.pain-title{font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:18px;color:var(–white);margin-bottom:8px;}
+.pain-body{font-size:14px;color:var(–gray);line-height:1.7;}
+
+/* ── SOLUTION DEMO ── */
+.demo{padding:80px 0;background:rgba(13,18,32,0.5);}
+.demo-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.demo-screen{
+background:var(–card);border:1px solid var(–border);
+border-radius:8px;overflow:hidden;
+box-shadow:0 0 60px rgba(26,143,227,0.15),0 20px 60px rgba(0,0,0,0.5);
+}
+.demo-bar{
+background:var(–surface);padding:12px 16px;
+border-bottom:1px solid var(–border);
+display:flex;align-items:center;gap:8px;
+}
+.demo-dot{width:8px;height:8px;border-radius:50%;}
+.demo-title{font-family:‘Rajdhani’,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(–gray);margin-left:8px;}
+.demo-body{padding:20px;}
+.live-pill{
+display:inline-flex;align-items:center;gap:6px;
+background:rgba(26,143,227,0.1);border:1px solid var(–blue);
+border-radius:2px;padding:4px 12px;margin-bottom:16px;
+font-family:‘Rajdhani’,sans-serif;font-size:11px;letter-spacing:3px;
+text-transform:uppercase;color:var(–blue-bright);
+}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:#FF4444;box-shadow:0 0 6px #FF4444;animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.queue-item{
+display:flex;justify-content:space-between;align-items:center;
+background:rgba(8,12,20,0.8);border:1px solid var(–border);
+border-radius:3px;padding:12px 14px;margin-bottom:8px;
+position:relative;
+}
+.qi-active{border-color:var(–blue);box-shadow:0 0 12px rgba(26,143,227,0.2);}
+.qi-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(–blue);border-radius:3px 0 0 3px;box-shadow:0 0 8px var(–blue);}
+.qi-song{font-family:‘Rajdhani’,sans-serif;font-weight:600;font-size:15px;color:var(–white);}
+.qi-meta{font-size:11px;color:var(–gray);margin-top:2px;}
+.qi-amount{font-family:‘Orbitron’,monospace;font-weight:700;font-size:15px;color:var(–blue-bright);}
+.tip-total{
+background:rgba(26,143,227,0.08);border:1px solid rgba(26,143,227,0.2);
+border-radius:3px;padding:12px 14px;margin-top:12px;
+display:flex;justify-content:space-between;align-items:center;
+}
+.tip-total-label{font-family:‘Rajdhani’,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(–gray);}
+.tip-total-num{font-family:‘Orbitron’,monospace;font-weight:900;font-size:24px;color:var(–blue-bright);text-shadow:0 0 12px rgba(74,171,240,0.5);}
+
+/* ── FEATURES ── */
+.features{padding:80px 0;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;}
+.feature-card{
+background:var(–card);border:1px solid var(–border);
+border-radius:4px;padding:28px;
+position:relative;overflow:hidden;transition:border-color 0.3s,box-shadow 0.3s;
+}
+.feature-card:hover{border-color:var(–blue);box-shadow:0 0 24px rgba(26,143,227,0.15);}
+.feature-card::before{
+content:’’;position:absolute;top:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(–blue),transparent);
+opacity:0;transition:opacity 0.3s;
+}
+.feature-card:hover::before{opacity:1;}
+.feature-icon{
+font-size:32px;margin-bottom:16px;display:block;
+filter:drop-shadow(0 0 8px rgba(74,171,240,0.4));
+}
+.feature-title{
+font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:19px;
+color:var(–white);margin-bottom:10px;
+}
+.feature-body{font-size:14px;color:var(–gray-light);line-height:1.7;}
+.feature-badge{
+display:inline-block;margin-top:12px;
+font-family:‘Rajdhani’,sans-serif;font-size:10px;letter-spacing:2px;
+text-transform:uppercase;color:var(–blue);
+border:1px solid rgba(26,143,227,0.3);padding:3px 8px;border-radius:2px;
+}
+
+/* ── COMPETITIVE ── */
+.competitive{padding:80px 0;background:rgba(13,18,32,0.6);}
+.compare-table{
+width:100%;border-collapse:collapse;margin-top:48px;
+background:var(–card);border:1px solid var(–border);border-radius:4px;overflow:hidden;
+}
+.compare-table th{
+background:var(–navy);padding:16px 20px;
+font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:13px;
+letter-spacing:2px;text-transform:uppercase;color:var(–white);
+text-align:left;border-bottom:1px solid var(–border);
+}
+.compare-table th.highlight{
+background:var(–blue-deep);color:var(–blue-bright);
+position:relative;
+}
+.compare-table th.highlight::after{
+content:’’;position:absolute;bottom:0;left:0;right:0;height:2px;
+background:var(–blue-bright);box-shadow:0 0 8px var(–blue-bright);
+}
+.compare-table td{
+padding:14px 20px;font-size:14px;color:var(–gray-light);
+border-bottom:1px solid rgba(28,42,64,0.5);
+}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table tr:hover td{background:rgba(26,143,227,0.03);}
+.compare-table td.highlight{
+background:rgba(26,143,227,0.05);color:var(–blue-bright);
+font-weight:500;
+}
+.check{color:#4AE080;font-size:18px;}
+.cross{color:rgba(107,138,170,0.4);font-size:18px;}
+.partial{color:var(–gold);font-size:14px;}
+
+/* ── PRICING ── */
+.pricing{padding:80px 0;}
+.pricing-intro{text-align:center;margin-bottom:56px;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.tier-card{
+background:var(–card);border:1px solid var(–border);
+border-radius:4px;padding:36px 28px;
+position:relative;overflow:hidden;
+display:flex;flex-direction:column;
+}
+.tier-card.featured{
+border-color:var(–blue);
+box-shadow:0 0 40px rgba(26,143,227,0.2),0 0 80px rgba(26,143,227,0.08);
+}
+.tier-card.featured::before{
+content:’’;position:absolute;top:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(–blue-bright),var(–blue),transparent);
+box-shadow:0 0 12px var(–blue);
+}
+.tier-badge{
+position:absolute;top:16px;right:16px;
+background:var(–blue);color:white;
+font-family:‘Rajdhani’,sans-serif;font-size:10px;font-weight:700;
+letter-spacing:2px;text-transform:uppercase;
+padding:4px 10px;border-radius:2px;
+}
+.tier-name{
+font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:13px;
+letter-spacing:4px;text-transform:uppercase;color:var(–gray);
+margin-bottom:8px;
+}
+.tier-price{
+font-family:‘Orbitron’,monospace;font-weight:900;
+font-size:52px;color:var(–white);line-height:1;margin-bottom:4px;
+}
+.tier-price.featured-price{
+color:var(–blue-bright);
+text-shadow:0 0 20px rgba(74,171,240,0.4);
+}
+.tier-cycle{
+font-size:13px;color:var(–gray);margin-bottom:24px;
+font-family:‘Rajdhani’,sans-serif;
+}
+.tier-desc{
+font-size:14px;color:var(–gray-light);line-height:1.7;
+margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(–border);
+}
+.tier-features{list-style:none;margin-bottom:32px;flex:1;}
+.tier-features li{
+font-size:14px;color:var(–gray-light);padding:7px 0;
+display:flex;align-items:flex-start;gap:10px;
+border-bottom:1px solid rgba(28,42,64,0.4);
+}
+.tier-features li:last-child{border-bottom:none;}
+.tier-features li .ti{color:var(–blue-bright);font-size:16px;flex-shrink:0;margin-top:1px;}
+.tier-features li .ti.no{color:rgba(107,138,170,0.3);}
+.tier-cta{
+display:block;text-align:center;
+font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:15px;
+letter-spacing:2px;text-transform:uppercase;text-decoration:none;
+padding:15px;border-radius:2px;transition:all 0.25s;
+}
+.tier-cta-outline{
+border:1.5px solid var(–border);color:var(–gray-light);
+}
+.tier-cta-outline:hover{border-color:var(–blue);color:var(–blue-bright);}
+.tier-cta-primary{
+background:var(–blue);color:white;
+box-shadow:0 0 24px rgba(26,143,227,0.4);
+}
+.tier-cta-primary:hover{background:var(–blue-bright);box-shadow:0 0 36px rgba(74,171,240,0.6);}
+.tier-cta-gold{
+background:rgba(200,150,12,0.15);color:var(–gold-light);
+border:1px solid var(–gold);
+}
+.tier-cta-gold:hover{background:rgba(200,150,12,0.25);}
+
+/* ── HOW IT WORKS ── */
+.hiw{padding:80px 0;background:rgba(13,18,32,0.5);}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:56px;position:relative;}
+.steps::before{
+content:’’;position:absolute;
+top:32px;left:10%;right:10%;height:1px;
+background:linear-gradient(90deg,var(–border),var(–blue),var(–border));
+z-index:0;
+}
+.step{text-align:center;position:relative;z-index:1;}
+.step-num{
+width:64px;height:64px;border-radius:50%;
+background:var(–card);border:2px solid var(–blue);
+font-family:‘Orbitron’,monospace;font-weight:900;font-size:22px;
+color:var(–blue-bright);display:flex;align-items:center;justify-content:center;
+margin:0 auto 20px;
+box-shadow:0 0 20px rgba(26,143,227,0.3);
+}
+.step-title{font-family:‘Rajdhani’,sans-serif;font-weight:700;font-size:17px;color:var(–white);margin-bottom:8px;}
+.step-body{font-size:13px;color:var(–gray);line-height:1.7;}
+
+/* ── BUSKER CALLOUT ── */
+.busker{padding:60px 0;}
+.busker-card{
+background:linear-gradient(135deg,rgba(13,18,32,0.95),rgba(10,32,60,0.95));
+border:1px solid var(–blue);border-radius:4px;padding:48px;
+display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+box-shadow:0 0 40px rgba(26,143,227,0.1);
+position:relative;overflow:hidden;
+}
+.busker-card::before{
+content:’’;position:absolute;top:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(–blue-bright),transparent);
+box-shadow:0 0 12px var(–blue);
+}
+
+/* ── FAQ ── */
+.faq{padding:80px 0;}
+.faq-list{max-width:780px;margin:48px auto 0;}
+.faq-item{
+border-bottom:1px solid var(–border);
+padding:24px 0;cursor:pointer;
+}
+.faq-q{
+display:flex;justify-content:space-between;align-items:center;
+font-family:‘Rajdhani’,sans-serif;font-weight:600;font-size:18px;
+color:var(–white);gap:20px;
+}
+.faq-icon{
+font-family:‘Orbitron’,monospace;font-size:20px;
+color:var(–blue);flex-shrink:0;transition:transform 0.3s;
+}
+.faq-a{
+font-size:15px;color:var(–gray-light);line-height:1.8;
+max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding-top 0.35s;
+}
+.faq-item.open .faq-a{max-height:300px;padding-top:16px;}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(–blue-bright);}
+
+/* ── AFFILIATE ── */
+.affiliate{
+padding:80px 0;
+background:radial-gradient(ellipse 800px 400px at center,rgba(13,92,153,0.12),transparent);
+}
+.affiliate-card{
+background:var(–card);border:1px solid var(–border);border-radius:4px;
+padding:56px 48px;text-align:center;
+position:relative;overflow:hidden;
+}
+.affiliate-card::before{
+content:’’;position:absolute;bottom:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,transparent,var(–gold),transparent);
+opacity:0.6;
+}
+
+/* ── FINAL CTA ── */
+.final-cta{
+padding:100px 0;text-align:center;
+background:linear-gradient(180deg,transparent,rgba(10,32,60,0.3),transparent);
+}
+.final-cta h2{
+font-family:‘Orbitron’,monospace;font-weight:900;
+font-size:clamp(32px,5vw,58px);letter-spacing:3px;
+color:var(–white);margin-bottom:16px;
+}
+.final-cta h2 span{
+color:var(–blue-bright);
+text-shadow:0 0 30px rgba(74,171,240,0.6);
+}
+.final-cta p{
+font-size:18px;color:var(–gray-light);margin-bottom:48px;max-width:540px;
+margin-left:auto;margin-right:auto;
+}
+.money-back{
+margin-top:32px;font-size:13px;color:var(–gray);
+font-family:‘Rajdhani’,sans-serif;letter-spacing:1px;
+}
+
+/* ── FOOTER ── */
+footer{
+background:var(–card);border-top:1px solid var(–border);
+padding:40px 0;
+}
+.footer-inner{
+display:flex;justify-content:space-between;align-items:center;
+flex-wrap:wrap;gap:20px;
+}
+.footer-logo{
+font-family:‘Orbitron’,monospace;font-weight:900;font-size:16px;
+letter-spacing:3px;color:var(–blue);text-decoration:none;
+}
+.footer-links{display:flex;gap:24px;list-style:none;}
+.footer-links a{
+font-size:12px;letter-spacing:1px;color:var(–gray);
+text-decoration:none;font-family:‘Rajdhani’,sans-serif;
+text-transform:uppercase;transition:color 0.2s;
+}
+.footer-links a:hover{color:var(–blue-bright);}
+.footer-copy{font-size:12px;color:var(–gray);font-family:‘Rajdhani’,sans-serif;}
+
+/* ── UTILITIES ── */
+.text-center{text-align:center;}
+.mt-8{margin-top:8px;}
+.mt-16{margin-top:16px;}
+.mt-24{margin-top:24px;}
+.inline-blue{color:var(–blue-bright);}
+.corner-tl{position:absolute;top:16px;left:16px;width:16px;height:16px;border-top:1.5px solid var(–blue);border-left:1.5px solid var(–blue);}
+.corner-br{position:absolute;bottom:16px;right:16px;width:16px;height:16px;border-bottom:1.5px solid var(–blue);border-right:1.5px solid var(–blue);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+.pricing-grid,.features-grid,.compare-table{display:block;}
+.pricing-grid .tier-card{margin-bottom:20px;}
+.features-grid .feature-card{margin-bottom:20px;}
+.demo-inner,.busker-card,.problem-grid{grid-template-columns:1fr;}
+.steps{grid-template-columns:1fr 1fr;}
+.steps::before{display:none;}
+nav .nav-links{display:none;}
+}
+@media(max-width:600px){
+.container{padding:0 20px;}
+.steps{grid-template-columns:1fr;}
+.stats-strip{flex-direction:column;}
+.stat-item{border-right:none;border-bottom:1px solid var(–border);}
+.stat-item:last-child{border-bottom:none;}
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes eqBar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(0.3);}}
+
+.hero h1,.hero-sub,.hero-ctas,.stats-strip{animation:fadeUp 0.8s ease both;}
+.hero-sub{animation-delay:0.1s;}
+.hero-ctas{animation-delay:0.2s;}
+.stats-strip{animation-delay:0.3s;}
+</style>
+
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- ═══ NAV ═══ -->
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">JAM ENGINE<span>Live Performance Platform</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#affiliate">Affiliates</a></li>
+    </ul>
+    <a href="#pricing" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+
+<section class="hero">
+  <div class="container">
+    <span class="hero-eyebrow">For Working Musicians &amp; Performing Artists</span>
+    <h1>Your Show.<br>Your <span class="accent">Revenue.</span><br>Your Engine.</h1>
+    <p class="hero-sub">
+      Jam Engine turns every live performance into a revenue-generating, fan-connecting, 
+      audience-engaging experience — in-venue, online, or anywhere in between. One QR code. One platform. Zero ongoing fees.
+    </p>
+    <div class="hero-ctas">
+      <a href="#pricing" class="btn-hero btn-hero-primary">Get My Platform — $300</a>
+      <a href="#features" class="btn-hero btn-hero-outline">See What's Included</a>
+    </div>
+
+```
+<div class="stats-strip">
+  <div class="stat-item">
+    <span class="stat-num">$0</span>
+    <span class="stat-label">Monthly Fees</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Tips Go To You</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">7</span>
+    <span class="stat-label">Tip Tiers</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">∞</span>
+    <span class="stat-label">Song Capacity</span>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══ PROBLEM ═══ -->
+
+<div class="neon-divider"></div>
+<section class="problem">
+  <div class="container">
+    <div>
+      <span class="section-label">The Problem</span>
+      <h2 class="section-title">The show is great.<br>The revenue system is broken.</h2>
+      <p class="section-body">Every night, talented performers leave money on the table and fans leave without a connection. It doesn't have to be this way.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="pain-card">
+        <span class="pain-icon">🪣</span>
+        <div class="pain-title">The tip jar does nothing</div>
+        <p class="pain-body">A glass jar on a stool. Passive. Anonymous. No engagement. No data. No email. Just coins from the three people who remembered to bring cash.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">📣</span>
+        <div class="pain-title">Song requests interrupt the flow</div>
+        <p class="pain-body">Someone yells from the back. You can't hear them. They come to the stage. The whole vibe breaks. There had to be a better way.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">💸</span>
+        <div class="pain-title">Subscriptions eat your tips</div>
+        <p class="pain-body">Other platforms take 10% of every tip. Or charge you $30/month. Or both. You're paying to use a tool that should be paying you.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">👻</span>
+        <div class="pain-title">Fans vanish after the show</div>
+        <p class="pain-body">A packed room. Great energy. Applause. Then nothing. No emails captured, no follows gained, no way to reach these people before your next gig.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOLUTION DEMO ═══ -->
+
+<div class="neon-divider"></div>
+<section class="demo">
+  <div class="container">
+    <div class="demo-inner">
+      <div>
+        <span class="section-label">The Solution</span>
+        <h2 class="section-title">One platform.<br>Everything changes.</h2>
+        <p class="section-body" style="margin-bottom:32px">
+          Fans scan a QR code and enter your show's live interface. They see your setlist, 
+          tip to request songs, boost their favourites up the queue, and you see all of it 
+          in real time on your performer screen.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="color:var(--blue-bright);font-size:20px;flex-shrink:0">⚡</span>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--white)">Tips confirm before requests appear</div>
+              <div style="font-size:13px;color:var(--gray)">Stripe processes every payment before the request hits your queue. No promise-and-run.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="color:var(--blue-bright);font-size:20px;flex-shrink:0">🎵</span>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--white)">Queue self-sorts by tip value</div>
+              <div style="font-size:13px;color:var(--gray)">Bigger tips climb higher. You can override and drag manually at any time. You're always in control.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="color:var(--blue-bright);font-size:20px;flex-shrink:0">📧</span>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--white)">Every tipper joins your mailing list</div>
+              <div style="font-size:13px;color:var(--gray)">Email captured at checkout with opt-in. Syncs to Substack automatically or delivered as a weekly digest.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+```
+  <!-- Live queue mockup -->
+  <div class="demo-screen">
+    <div class="demo-bar">
+      <div class="demo-dot" style="background:#FF5F57"></div>
+      <div class="demo-dot" style="background:#FEBC2E"></div>
+      <div class="demo-dot" style="background:#28C840"></div>
+      <span class="demo-title">Performer View — Live</span>
+      <div style="margin-left:auto"><span class="live-pill"><span class="pulse-dot"></span>Live</span></div>
+    </div>
+    <div class="demo-body">
+      <div class="queue-item qi-active">
+        <div class="qi-bar"></div>
+        <div style="padding-left:8px">
+          <div class="qi-song">Valerie</div>
+          <div class="qi-meta">Amy Winehouse · Sarah M. + 2 boosts</div>
+        </div>
+        <div class="qi-amount">$65</div>
+      </div>
+      <div class="queue-item">
+        <div>
+          <div class="qi-song">Dreams</div>
+          <div class="qi-meta">Fleetwood Mac · James T.</div>
+        </div>
+        <div class="qi-amount" style="color:var(--blue)">$20</div>
+      </div>
+      <div class="queue-item">
+        <div>
+          <div class="qi-song">Stand By Me</div>
+          <div class="qi-meta">Ben E. King · Anonymous</div>
+        </div>
+        <div class="qi-amount" style="color:var(--blue)">$5</div>
+      </div>
+      <div class="queue-item" style="opacity:0.4">
+        <div>
+          <div class="qi-song" style="text-decoration:line-through;color:var(--gray)">Smooth Operator</div>
+          <div class="qi-meta">✓ Played</div>
+        </div>
+        <div class="qi-amount" style="color:var(--gray)">$10</div>
+      </div>
+      <div class="tip-total">
+        <div class="tip-total-label">Tonight's Tips</div>
+        <div class="tip-total-num">$247 💙</div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+
+<div class="neon-divider"></div>
+<section class="features" id="features">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">Full Feature Set</span>
+      <h2 class="section-title">Built for the stage.<br>Built for every stage.</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🎸</span>
+        <div class="feature-title">Full Digital Songbook</div>
+        <p class="feature-body">Import your songs from Songbook Pro or Ultimate Guitar, or enter them manually. Every chart is stored with the real chord names, rendered above lyrics, and transposable in real time.</p>
+        <span class="feature-badge">Unique to Jam Engine</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎵</span>
+        <div class="feature-title">Live Key Transposition</div>
+        <p class="feature-body">Change key mid-show and every chord updates instantly for the whole band. Key sync warnings keep everyone aligned. One tap to fix it for all. Works for transposing instruments too.</p>
+        <span class="feature-badge">Unique to Jam Engine</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">👥</span>
+        <div class="feature-title">Band Portal</div>
+        <p class="feature-body">Invite bandmates via private link. They swipe through the setlist, read charts, and see key sync warnings in real time — on their own device. No app download. Invite-only access.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Tip Boosting & Voting</div>
+        <p class="feature-body">Fans can pile on to any existing request to push it up the queue. Plus one free vote per show keeps non-tippers engaged. More touchpoints means more people warming up to tip.</p>
+        <span class="feature-badge">Competitive Advantage</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📡</span>
+        <div class="feature-title">Hybrid & Streaming Shows</div>
+        <p class="feature-body">Embed your YouTube Live, Twitch, or Facebook Live stream. Online fans enter the same live queue as in-room fans. Everyone tips together. Flash the Cash fires on every screen in every location.</p>
+        <span class="feature-badge">Unique to Jam Engine</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📸</span>
+        <div class="feature-title">Fan Photo Wall</div>
+        <p class="feature-body">Audience members upload selfies and moments during or after tipping. Photos scroll on your performer screen. During Flash the Cash events, they explode across the display. Instant social shareability.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📺</span>
+        <div class="feature-title">Coming Up Next Display</div>
+        <p class="feature-body">A fullscreen TV or projector mode showing the live queue for the whole room to see. When a song jumps up after a tip, everyone sees it. Drives more tipping instantly.</p>
+        <span class="feature-badge">Unique to Jam Engine</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎙️</span>
+        <div class="feature-title">Busker Mode</div>
+        <p class="feature-body">A simplified single-screen view for street performers. Big QR code. One-tap accept or skip. Designed to be glanceable mid-song, outdoors, in daylight. Set up in under 30 seconds.</p>
+        <span class="feature-badge">Unique to Jam Engine</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <div class="feature-title">Analytics Dashboard</div>
+        <p class="feature-body">Your most requested songs, top venues, average tips per show, fan growth over time, streaming link clicks. Real data to plan better setlists, pick better venues, and grow your audience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMPETITIVE ═══ -->
+
+<div class="neon-divider"></div>
+<section class="competitive">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">Why Jam Engine</span>
+      <h2 class="section-title">What the others don't have.</h2>
+      <p class="section-body" style="margin:16px auto 0;text-align:center">We've mapped every competitor. Here's what we have that they don't — and what they charge for what they do have.</p>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th class="highlight">Jam Engine</th>
+          <th>TipTune</th>
+          <th>Lime DJ</th>
+          <th>NoSongRequests</th>
+          <th>mySet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Full band songbook + chord charts</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Real-time key transposition</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Band member key sync warnings</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Hybrid in-venue + online audience</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="partial">Partial</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Coming Up Next venue display</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Busker Mode</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="partial">Partial</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Tip boosting (social pile-on)</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Artist owns their platform instance</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+        <tr>
+          <td>Zero ongoing platform fee</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">10% per tip</span></td>
+          <td><span class="cross">Monthly sub</span></td>
+          <td><span class="cross">Monthly sub</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Custom branding per artist</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">—</span></td>
+          <td><span class="partial">Limited</span></td>
+          <td><span class="partial">Limited</span></td>
+          <td><span class="cross">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+
+<div class="neon-divider"></div>
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-intro">
+      <span class="section-label">Simple Pricing</span>
+      <h2 class="section-title">One payment. Your platform. Forever.</h2>
+      <p class="section-body" style="margin:16px auto 0;text-align:center">No subscriptions. No revenue share. No tricks. Pay once, own your instance. Add Stripe, connect your accounts, and you keep every dollar your fans send.</p>
+    </div>
+    <div class="pricing-grid">
+
+```
+  <!-- Starter -->
+  <div class="tier-card">
+    <div class="corner-tl"></div>
+    <div class="tier-name">Starter</div>
+    <div class="tier-price">$99</div>
+    <div class="tier-cycle">One-time payment · Yours forever</div>
+    <div class="tier-desc">Everything you need to start taking digital tips and requests at your next gig. Perfect if you're a solo act getting started.</div>
+    <ul class="tier-features">
+      <li><span class="ti">✓</span>Public artist hub with your music & shows</li>
+      <li><span class="ti">✓</span>Permanent QR code</li>
+      <li><span class="ti">✓</span>Live show mode + tip-to-request</li>
+      <li><span class="ti">✓</span>Tip tiers $2 to $500</li>
+      <li><span class="ti">✓</span>Flash the Cash celebration</li>
+      <li><span class="ti">✓</span>Audience live chat</li>
+      <li><span class="ti">✓</span>Song database (up to 50 songs)</li>
+      <li><span class="ti">✓</span>Free vote per fan per show</li>
+      <li><span class="ti">✓</span>Basic colour + logo branding</li>
+      <li><span class="ti">✓</span>Subdomain: you.jamengine.com</li>
+      <li><span class="ti no">✗</span><span style="color:var(--gray)">Band portal &amp; key transposition</span></li>
+      <li><span class="ti no">✗</span><span style="color:var(--gray)">Analytics dashboard</span></li>
+      <li><span class="ti no">✗</span><span style="color:var(--gray)">Streaming &amp; hybrid shows</span></li>
+      <li><span class="ti no">✗</span><span style="color:var(--gray)">Fan email capture</span></li>
+    </ul>
+    <a href="#contact" class="tier-cta tier-cta-outline">Get Starter</a>
+  </div>
+
+  <!-- Complete — FEATURED -->
+  <div class="tier-card featured">
+    <div class="tier-badge">Most Popular</div>
+    <div class="tier-name" style="color:var(--blue)">Complete</div>
+    <div class="tier-price featured-price">$300</div>
+    <div class="tier-cycle" style="color:var(--blue)">One-time payment · Yours forever</div>
+    <div class="tier-desc" style="border-color:rgba(26,143,227,0.2)">The full engine. Everything you need to run every type of show — in-venue, online, or busking. Includes your complete digital songbook, full band portal, and the entire feature set.</div>
+    <ul class="tier-features">
+      <li><span class="ti">✓</span>Everything in Starter</li>
+      <li><span class="ti">✓</span><strong>Unlimited song database</strong></li>
+      <li><span class="ti">✓</span><strong>Import from Songbook Pro &amp; UG</strong></li>
+      <li><span class="ti">✓</span><strong>Band portal (up to 5 members)</strong></li>
+      <li><span class="ti">✓</span><strong>Real-time key transposition</strong></li>
+      <li><span class="ti">✓</span><strong>Key sync warnings across band</strong></li>
+      <li><span class="ti">✓</span><strong>Tip boosting + fan photo wall</strong></li>
+      <li><span class="ti">✓</span><strong>Coming Up Next venue display</strong></li>
+      <li><span class="ti">✓</span><strong>Streaming + hybrid shows</strong></li>
+      <li><span class="ti">✓</span><strong>Busker Mode</strong></li>
+      <li><span class="ti">✓</span><strong>Fan email capture + mailing list</strong></li>
+      <li><span class="ti">✓</span><strong>Analytics dashboard</strong></li>
+      <li><span class="ti">✓</span><strong>Full custom branding</strong></li>
+      <li><span class="ti">✓</span><strong>Custom domain setup</strong></li>
+      <li><span class="ti">✓</span><strong>Post-show fan thank-you emails</strong></li>
+      <li><span class="ti">✓</span><strong>Chat moderation + block system</strong></li>
+    </ul>
+    <a href="#contact" class="tier-cta tier-cta-primary">Get Complete — $300</a>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--gray)">Pays for itself in 4 shows</div>
+  </div>
+
+  <!-- Concierge -->
+  <div class="tier-card">
+    <div class="corner-br"></div>
+    <div class="tier-name" style="color:var(--gold)">Concierge</div>
+    <div class="tier-price" style="color:var(--gold-light);font-size:40px">$500<span style="font-size:22px;color:var(--gold)">/yr</span></div>
+    <div class="tier-cycle">Annual · Auto-renews · Cancel anytime</div>
+    <div class="tier-desc">Everything in Complete, plus ongoing support, updates, and customisation. Your Jam Engine evolves with you — and someone who knows what they're doing is on call when you need them.</div>
+    <ul class="tier-features">
+      <li><span class="ti" style="color:var(--gold)">✓</span>Everything in Complete</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Ongoing bug fixes &amp; updates</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Feature upgrade requests</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Priority onboarding with live walkthrough</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Direct Substack integration</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Booking enquiry routing (up to 3 emails)</li>
+      <li><span class="ti" style="color:var(--gold)">✓</span>Custom feature additions on request</li>
+    </ul>
+    <a href="#contact" class="tier-cta tier-cta-gold">Get Concierge</a>
+  </div>
+</div>
+
+<!-- Value callout -->
+<div style="background:rgba(26,143,227,0.06);border:1px solid rgba(26,143,227,0.2);border-radius:4px;padding:32px 40px;margin-top:40px;display:flex;gap:40px;align-items:center;flex-wrap:wrap;">
+  <div style="flex:1;min-width:280px">
+    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:2px;color:var(--blue);margin-bottom:8px">THE MATHS</div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:600;color:var(--white);line-height:1.5">3 shows per week × $80 average tips = <span style="color:var(--blue-bright)">$12,480 extra per year.</span><br>Your $300 investment pays back in 4 shows.</div>
+  </div>
+  <div style="flex:1;min-width:280px">
+    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:2px;color:var(--blue);margin-bottom:8px">WHAT YOU KEEP</div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:600;color:var(--white);line-height:1.5">Every dollar your fans send goes to <span style="color:var(--blue-bright)">your Stripe account directly.</span> Jam Engine takes nothing. We charged you once, at the start. That's it.</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+
+<div class="neon-divider"></div>
+<section class="hiw" id="how">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">The Process</span>
+      <h2 class="section-title">From sign-up to showtime.<br>Faster than you think.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Choose Your Tier</div>
+        <p class="step-body">Pick Starter, Complete, or Concierge. Pay once through our secure Stripe checkout. Done in under 2 minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Fill Your Onboarding Form</div>
+        <p class="step-body">You'll receive a link to a simple form. Your name, branding, social links, Stripe account. Takes about 15 minutes. No tech knowledge needed.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">We Build It For You</div>
+        <p class="step-body">Your personalised Jam Engine platform is configured, branded, and deployed. You receive your login, your URL, and a walkthrough guide.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Play Your First Show</div>
+        <p class="step-body">Import your songs, build your setlist, activate live mode. Your QR code is ready. Your fans scan it. The tips start coming in.</p>
+      </div>
+    </div>
+
+```
+<div style="max-width:600px;margin:56px auto 0;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:32px;">
+  <div style="font-family:'Orbitron',monospace;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:12px">SETUP WIZARD</div>
+  <div style="font-family:'Rajdhani',sans-serif;font-size:17px;color:var(--white);margin-bottom:8px">Not a tech person? Perfect. That's who we built this for.</div>
+  <div style="font-size:14px;color:var(--gray-light);line-height:1.7">Your artist portal has a step-by-step setup wizard that walks you through every configuration in plain English. Skip anything you already know. Come back to anything you need. It's skippable for pros and hand-holding for everyone else.</div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══ BUSKER CALLOUT ═══ -->
+
+<div class="neon-divider"></div>
+<section class="busker">
+  <div class="container">
+    <div class="busker-card">
+      <div class="corner-tl"></div>
+      <div>
+        <span class="section-label">For Buskers</span>
+        <h2 class="section-title" style="font-size:clamp(24px,3.5vw,38px)">Playing on the street?<br>Jam Engine has a mode for that.</h2>
+        <p class="section-body" style="margin-top:16px;max-width:100%">Busker Mode strips everything back to what matters: a giant QR code, incoming tips as notification cards, and a running total. Glanceable mid-song. Works in daylight. Set up in 30 seconds. A passing stranger tips $20 before they've even stopped walking. That's Busker Mode.</p>
+      </div>
+      <div style="text-align:center">
+        <div style="background:var(--black);border:2px solid var(--blue);border-radius:8px;padding:32px;box-shadow:0 0 30px rgba(26,143,227,0.2);display:inline-block">
+          <!-- QR placeholder -->
+          <div style="width:160px;height:160px;background:linear-gradient(135deg,var(--surface),var(--card));border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+            <div style="font-family:'Orbitron',monospace;font-size:10px;letter-spacing:2px;color:var(--blue);text-align:center">YOUR<br>QR CODE<br>HERE</div>
+          </div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gray)">Tip &amp; Request</div>
+          <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:22px;color:var(--blue-bright);margin-top:4px;text-shadow:0 0 10px rgba(74,171,240,0.4)">$127</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:4px">Today's tips</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+
+<div class="neon-divider"></div>
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Questions we hear a lot.</h2>
+    </div>
+    <div class="faq-list">
+
+```
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Do I really own my platform, or is it more like renting?<span class="faq-icon">+</span></div>
+    <div class="faq-a">You truly own it. Your platform is deployed on your own free accounts (Vercel, Supabase, Cloudinary). Jam Engine sets it up and hands over full access. If Jam Engine ceased to exist tomorrow, your site would keep running because it lives on infrastructure you control. We charge once to build it, then we step back.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What does "zero ongoing fees" actually mean?<span class="faq-icon">+</span></div>
+    <div class="faq-a">The accounts that run your platform (Vercel, Supabase, Cloudinary) all have generous free tiers that cover everything a working musician needs. Stripe charges their standard processing fee on every tip — typically around 2–3% — but that goes to Stripe, not to Jam Engine. We take nothing from your tips, ever.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What if a fan pays a tip and I don't play their song?<span class="faq-icon">+</span></div>
+    <div class="faq-a">This is something every platform has to address. By design, a tip-to-request is a request, not a guarantee — that's stated clearly in the fan-facing interface. You're in control of your setlist and never obligated to play anything. That said, the platform is designed to make it easy to honour requests, and the queue system makes it clear what fans have asked for.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">I'm not technical at all. Can I still use this?<span class="faq-icon">+</span></div>
+    <div class="faq-a">Absolutely. The entire setup process is handled by our team using the information you provide in your onboarding form. You'll create a few free accounts (we guide you through each one with step-by-step instructions), and then we do the rest. Your artist portal has a setup wizard for any configuration you need to do yourself — it's designed for non-technical users and includes a skip button for anything you already know.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I upgrade from Starter to Complete later?<span class="faq-icon">+</span></div>
+    <div class="faq-a">Yes. You'll pay the difference ($201) at any time and we'll upgrade your instance. You don't lose any of your song database, show history, or fan data in the process.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">I already use Songbook Pro. Can I import my songs?<span class="faq-icon">+</span></div>
+    <div class="faq-a">Yes. Jam Engine Complete includes a Songbook Pro importer. Export your songs from Songbook Pro as an .sbp file and import it into your Jam Engine portal — your entire catalog transfers including titles, artists, chord charts, and default keys. You can also paste from Ultimate Guitar or enter songs manually.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Does this work for online streams and YouTube shows?<span class="faq-icon">+</span></div>
+    <div class="faq-a">Yes. During show setup, paste your YouTube Live, Twitch, or Facebook Live URL. Your stream embed appears on the public hub and fan view. Online fans join the same live queue as in-room fans and interact identically. You can run a full hybrid show — in-venue audience and online audience in the same experience simultaneously.</div>
+  </div>
+
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What about chat moderation? What if someone is abusive?<span class="faq-icon">+</span></div>
+    <div class="faq-a">Jam Engine has a two-tier block system. A soft block raises the minimum tip a user needs to have their messages appear. A hard block silences them entirely — but still accepts their tips. You can apply either type for the current show only or permanently. A keyword filter catches flagged content automatically and shows it with a red indicator on your screen before it appears publicly.</div>
+  </div>
+
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══ AFFILIATE ═══ -->
+
+<div class="neon-divider"></div>
+<section class="affiliate" id="affiliate">
+  <div class="container">
+    <div class="affiliate-card">
+      <div style="font-size:40px;margin-bottom:16px">🤝</div>
+      <span class="section-label">Sales Affiliate Program</span>
+      <h2 class="section-title" style="margin-bottom:16px">Sell Jam Engine.<br>Earn on every sale.</h2>
+      <p class="section-body" style="margin:0 auto 40px;text-align:center">Know musicians who'd benefit from this? Share your unique affiliate link. When someone buys through your link, you automatically receive <strong style="color:var(--blue-bright)">$80 on every $300 Complete sale</strong> — deposited directly to your Stripe account at the moment of purchase.</p>
+      <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:36px;color:var(--gold-light)">$80</div>
+          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gray)">Per $300 sale</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:36px;color:var(--gold-light)">Auto</div>
+          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gray)">Instant Stripe payout</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:36px;color:var(--gold-light)">∞</div>
+          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gray)">No cap on referrals</div>
+        </div>
+      </div>
+      <a href="#contact" style="display:inline-block;background:var(--gold);color:var(--black);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;padding:16px 40px;border-radius:2px;text-decoration:none;transition:all 0.2s">Apply to Become an Affiliate</a>
+      <p style="font-size:12px;color:var(--gray);margin-top:16px">Applications reviewed by our sales team · ABN/TFN required · Approved within 48 hours</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+
+<div class="neon-divider"></div>
+<section class="final-cta" id="contact">
+  <div class="container">
+    <h2>Ready to power<br>your <span>performance?</span></h2>
+    <p>Your platform is built, branded, and handed over. Your songs, your setlists, your fans. One payment, yours forever.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="mailto:hello@jamengine.com?subject=Complete%20Package%20Enquiry" class="btn-hero btn-hero-primary" style="font-size:18px;padding:20px 52px">
+        Get My Platform — $300
+      </a>
+      <a href="mailto:hello@jamengine.com?subject=Starter%20Package%20Enquiry" class="btn-hero btn-hero-outline">
+        Start With Starter — $99
+      </a>
+    </div>
+    <div class="money-back" style="margin-top:24px">
+      Questions first? Email <a href="mailto:hello@jamengine.com" style="color:var(--blue-bright)">hello@jamengine.com</a> · Typically responded to within 24 hours
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="#" class="footer-logo">JAM ENGINE</a>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#affiliate">Affiliates</a></li>
+        <li><a href="mailto:hello@jamengine.com">Contact</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+      <div class="footer-copy">© 2025 Jam Engine · All rights reserved</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+
+// Animated tip counter
+let tipAmount = 247;
+setInterval(()=>{
+  const adds = [5,10,20,50];
+  tipAmount += adds[Math.floor(Math.random()*adds.length)];
+  const el = document.querySelector('.tip-total-num');
+  if(el) el.textContent = '$'+tipAmount+' 💙';
+}, 4000);
+
+// Queue animation — occasionally bump top item
+setTimeout(()=>{
+  const items = document.querySelectorAll('.queue-item:not(.qi-active)');
+  setInterval(()=>{
+    items.forEach(i=>i.style.opacity='1');
+    const el = document.querySelector('.qi-amount');
+    if(el){
+      const cur = parseInt(el.textContent.replace('$',''));
+      el.style.transform='scale(1.2)';
+      el.textContent = '$'+(cur+10);
+      setTimeout(()=>el.style.transform='scale(1)',300);
+    }
+  }, 6000);
+},2000);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.animation='fadeUp 0.7s ease both';
+      observer.unobserve(e.target);
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.feature-card,.tier-card,.step,.pain-card').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
